@@ -2,26 +2,33 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { signToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
+import { pbkdf2Sync } from 'node:crypto';
+
+function verifyPassword(password: string, storedHash: string) {
+    const [salt, originalHash] = storedHash.split(':');
+    const hash = pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return hash === originalHash;
+}
 
 export async function POST(request: Request) {
     try {
         const { email, password } = await request.json();
 
-        // In a real app, verify password. Here we just find/create by email for demo.
-        // The user mentioned "google console api key will be provided", so likely OAuth later.
-        // For now, simple email login to get into the dashboard.
-
-        let user = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: { email },
         });
 
         if (!user) {
-            user = await prisma.user.create({
-                data: {
-                    email,
-                    name: email.split('@')[0],
-                },
-            });
+            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+        }
+
+        if (!user.password) {
+            return NextResponse.json({ error: 'Please login with OAuth' }, { status: 400 });
+        }
+
+        const isValid = verifyPassword(password, user.password);
+        if (!isValid) {
+            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
         }
 
         const token = signToken({ id: user.id, email: user.email });
