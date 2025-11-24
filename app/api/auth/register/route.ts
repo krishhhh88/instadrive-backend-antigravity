@@ -47,9 +47,23 @@ export async function POST(request: Request) {
             path: '/',
         });
 
-        return NextResponse.json({ user });
-    } catch (error) {
-        console.error('Registration error:', error);
-        return NextResponse.json({ error: 'Registration failed' }, { status: 500 });
+        // Handle BigInt serialization for JSON
+        const safeUser = JSON.parse(JSON.stringify(user, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        ));
+
+        return NextResponse.json({ user: safeUser });
+    } catch (error: any) {
+        console.error('Registration error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        return NextResponse.json({
+            error: 'Registration failed',
+            details: error.message
+        }, { status: 500 });
     }
 }
