@@ -77,8 +77,8 @@ export async function GET(request: Request) {
 
         response.cookies.set('auth_token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: true, // Always secure for cross-site
+            sameSite: 'none', // Required for cross-site
             maxAge: 60 * 60 * 24 * 7, // 7 days
             path: '/',
         });
