@@ -24,16 +24,13 @@
     "react-dom": "19.2.0",
     "zod": "^4.1.12"
   },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/cookie": "^0.6.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+  "@types/cookie": "^0.6.0",
+  "@types/jsonwebtoken": "^9.0.10",
+  "@types/node": "^20",
+  "@types/react": "^19",
+  "@types/react-dom": "^19",
+  "eslint": "^9",
+  "eslint-config-next": "16.0.3",
+  "typescript": "^5"
+}
 }
