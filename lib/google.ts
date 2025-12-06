@@ -27,11 +27,31 @@ export async function getDriveClient(userId: string) {
     return google.drive({ version: 'v3', auth: oauth2Client });
 }
 
-export async function listVideoFiles(userId: string) {
+export async function listDriveFolders(userId: string) {
     try {
         const drive = await getDriveClient(userId);
         const response = await drive.files.list({
-            q: "mimeType contains 'video/' and trashed = false",
+            q: "mimeType = 'application/vnd.google-apps.folder' and trashed = false",
+            fields: 'files(id, name)',
+            pageSize: 50,
+        });
+        return response.data.files || [];
+    } catch (error) {
+        console.error('Error listing drive folders:', error);
+        return [];
+    }
+}
+
+export async function listVideoFiles(userId: string, folderId?: string) {
+    try {
+        const drive = await getDriveClient(userId);
+        let query = "mimeType contains 'video/' and trashed = false";
+        if (folderId) {
+            query += ` and '${folderId}' in parents`;
+        }
+
+        const response = await drive.files.list({
+            q: query,
             fields: 'files(id, name, mimeType, size, thumbnailLink, webContentLink)',
             pageSize: 20,
         });

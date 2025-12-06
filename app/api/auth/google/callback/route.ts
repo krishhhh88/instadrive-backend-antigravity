@@ -64,7 +64,16 @@ export async function GET(request: Request) {
         const token = signToken({ id: user.id, email: user.email });
 
         // Create response with cookie
-        const response = NextResponse.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+        const state = searchParams.get('state');
+
+        // ... (existing code)
+
+        // Create response with cookie
+        const redirectUrl = state === 'settings'
+            ? `${process.env.FRONTEND_URL}/dashboard/settings`
+            : `${process.env.FRONTEND_URL}/dashboard`;
+
+        const response = NextResponse.redirect(redirectUrl);
 
         response.cookies.set('auth_token', token, {
             httpOnly: true,
