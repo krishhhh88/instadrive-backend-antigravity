@@ -1,8 +1,24 @@
 {
+    "buildCommand": "prisma generate && next build",
+    "installCommand": "npm install",
+    "framework": "nextjs",
     "crons": [
         {
             "path": "/api/cron",
-            "schedule": "0 0 * * *"
+            "schedule": "0 * * * *"
         }
-    ]
+    ],
+    "env": {
+        "DATABASE_URL": "@database_url",
+        "JWT_SECRET": "@jwt_secret",
+        "GOOGLE_CLIENT_ID": "@google_client_id",
+        "GOOGLE_CLIENT_SECRET": "@google_client_secret",
+        "GOOGLE_REDIRECT_URI": "https://instadrive-backend-antigravity.vercel.app/api/auth/google/callback",
+        "INSTAGRAM_APP_ID": "@instagram_app_id",
+        "INSTAGRAM_APP_SECRET": "@instagram_app_secret",
+        "INSTAGRAM_REDIRECT_URI": "https://instadrive-backend-antigravity.vercel.app/api/auth/instagram/callback",
+        "FRONTEND_URL": "https://instadeiv.netlify.app",
+        "CRON_SECRET": "@cron_secret",
+        "NODE_ENV": "production"
+    }
 }

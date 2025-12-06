@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         });
 
         if (!user) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
         if (!user.password) {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
         const isValid = verifyPassword(password, user.password);
         if (!isValid) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
         }
 
         const token = signToken({ id: user.id, email: user.email });

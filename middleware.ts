@@ -4,9 +4,19 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
     const origin = request.headers.get('origin') || '';
 
-    // Define allowed origins (or allow all for debugging if needed, but echoing origin is better for credentials)
-    // In production, you might want to restrict this, but for now we echo the origin to fix the user's issue.
-    const allowedOrigin = origin;
+    // Get allowed origins from environment
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+    // Allow both production frontend and localhost for development
+    const allowedOrigins = [
+        frontendUrl,
+        'http://localhost:5173',  // Development frontend
+        'http://localhost:3000',  // Development backend (for testing)
+    ];
+
+    // Check if origin is allowed
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+    const allowedOrigin = isAllowedOrigin ? origin : frontendUrl;
 
     // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
